@@ -1,58 +1,183 @@
-# Axiom AI
+<h1 align="center" style="font-weight: bold; font-size: 3em;">AXIOM AI</h1>
 
-Full-stack AI-powered application with Node.js backend and modern frontend.
+<div align="center">
 
-## Project Structure
+### **Enterprise Neural Interface with Multi-Model Intelligence**
 
+**Axiom AI** is a secure, production-hardened AI workspace that unifies ultra-fast inference (Groq) and deep reasoning capabilities (Cerebras) into a single, premium interface.
+
+</div>
+
+---
+
+## Problem Statement & Solution
+
+**The Problem:** Enterprise teams need access to diverse AI capabilities—ranging from sub-second answers to complex architectural reasoning—without switching between fragmented tools or compromising on security/privacy.
+
+**The Solution:**
+Axiom AI provides a unified "Glassmorphic" neural interface that:
+- Router automatically delegates tasks to the optimal engine (**Groq** for speed, **Cerebras** for reasoning).
+- Enforces strict JWT-based session security with HTTP-only cookies.
+- Delivers a premium, zero-latency user experience with optimistic UI updates.
+
+---
+
+## Architecture
+
+```mermaid
+graph TD
+    User[Clients] -->|HTTPS/WSS| CDN[Load Balancer]
+    CDN -->|Static Assets| Frontend[React + Vite Frontend]
+    CDN -->|API Requests| Backend[Node.js + Express API]
+    
+    subgraph "Axiom Core"
+        Backend -->|Auth| AuthMiddleware[JWT Security Layer]
+        Backend -->|State| DB[(MongoDB Atlas)]
+        
+        subgraph "Neural Router"
+            Backend -->|Standard/Code| EngineA[Groq LPU (Llama 3)]
+            Backend -->|Deep Thinking| EngineB[Cerebras Wafer (Llama 3.1)]
+        end
+    end
 ```
-AXIOM AI/
-├── backend/          # Node.js + Express API
-│   ├── src/
-│   │   ├── config/
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   ├── models/
-│   │   ├── routes/
-│   │   ├── utils/
-│   │   ├── app.js
-│   │   └── server.js
-│   ├── package.json
-│   └── .env.example
-│
-└── frontend/         # Frontend application (coming soon)
-```
 
-## Backend Setup
+---
 
+## Tech Stack & Decisions
+
+### **Frontend (The Neural Interface)**
+- **Framework:** React 18 + Vite (for lightning-fast HMR and build performance).
+- **State Management:** TanStack Query (React Query) for server-state synchronization and optimistic updates.
+- **Styling:** TailwindCSS with custom "Axiom" design tokens + manual glassmorphism.
+- **Motion:** Framer Motion (only for essential micro-interactions).
+- **Icons:** Lucide React (feather-light, consistent iconography).
+
+### **Backend (The Core)**
+- **Runtime:** Node.js + Express.
+- **Database:** MongoDB (Mongoose ODM) with rigorous schema validation.
+- **Security:** Helmet (Headers), CORS (Strict Origin), Bcrypt (Hashing), JWT (HttpOnly Cookies).
+- **AI Integration:** Custom `ProviderRouter` service that normalizes responses from Groq and Cerebras SDKs.
+
+---
+
+## Features List
+
+- [x] **Multi-Model Intelligence**: Seamless switching between "Standard Chat", "Code Mode", and "Deep Thinking" (Reasoning).
+- [x] **Premium Glassmorphic UI**: High-end aesthetic with blur effects, smooth gradients, and micro-interactions.
+- [x] **Secure Authentication**: Enterprise-grade registration and login flow with JWT and session persistence.
+- [x] **Global Toast System**: Centralized, non-blocking notification system for all user actions.
+- [x] **Smart Chat Management**: Pin, Delete, and Share chat sessions instantly.
+- [x] **Optimistic UX**: Instant feedback for all state-changing actions (no spinners unless necessary).
+- [x] **Zero-Console Policy**: Production-hardened code with zero stray logs or errors.
+
+---
+
+## Getting Started
+
+### **Prerequisites**
+- Node.js v18+
+- MongoDB Atlas URI
+- Groq API Key
+- Cerebras API Key
+
+### **Setup & Installation**
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/ManasSaxena14/AXIOM_AI--LLM-.git
+   cd AXIOM_AI--LLM-
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   # Install Backend
+   cd backend
+   npm install
+
+   # Install Frontend
+   cd ../frontend
+   npm install
+   ```
+
+3. **Configure Environment Variables**
+   Create `.env` files in both `backend` and `frontend` directories based on the `.env.example` files.
+
+   **Backend (`backend/.env`):**
+   ```env
+   NODE_ENV=development
+   PORT=5001
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_super_secret_key
+   JWT_EXPIRE=7d
+   GROQ_API_KEY=your_groq_key
+   CEREBRAS_API_KEY=your_cerebras_key
+   CLIENT_URL=http://localhost:5173
+   ```
+
+   **Frontend (`frontend/.env`):**
+   ```env
+   VITE_API_URL=http://localhost:5001/api
+   ```
+
+### **Run Scripts**
+
+**Development Mode (Run both concurrently):**
 ```bash
+# Terminal 1 (Backend)
 cd backend
-cp .env.example .env
-# Update .env with your MongoDB URI
-npm install
+npm run dev
+
+# Terminal 2 (Frontend)
+cd frontend
 npm run dev
 ```
 
-## API Endpoints
+---
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `POST /api/auth/logout` - Logout user (requires auth)
-- `GET /api/auth/me` - Get current user (requires auth)
+## Project Structure
 
-### Health Check
-- `GET /api/health` - Server status
-- `GET /api/health/ping` - Ping endpoint
+```bash
+AXIOM_AI/
+├── backend/
+│   ├── src/
+│   │   ├── config/         # DB & Env Config
+│   │   ├── controllers/    # Request Logic (Auth, Chat)
+│   │   ├── middleware/     # Security & Error Handling
+│   │   ├── models/         # Mongoose Schemas (User, Chat, Message)
+│   │   ├── routes/         # API Endpoint Definitions
+│   │   ├── services/       # AI Provider Logic (Groq/Cerebras)
+│   │   └── utils/          # Async Wrappers & Custom Errors
+│   └── app.js              # Express App Entry
+│
+└── frontend/
+    ├── src/
+    │   ├── api/            # Axios Client Interceptors
+    │   ├── components/     # UI Components (Sidebar, ChatMessage, etc.)
+    │   ├── contexts/       # Global State (Auth, Toast)
+    │   ├── hooks/          # Custom Hooks (useChats, useMessages)
+    │   ├── layouts/        # Route Layouts
+    │   └── pages/          # Full Page Views (Login, Chat, Profile)
+```
 
-## Tech Stack
+---
 
-**Backend:**
-- Node.js
-- Express.js
-- MongoDB with Mongoose
-- JWT Authentication (HTTP-only cookies)
-- bcryptjs for password hashing
+## Roadmap & Contribution
+
+We welcome contributions to the Axiom Core.
+
+- [ ] **Voice Mode:** Real-time STT/TTS integration.
+- [ ] **File Analysis:** RAG pipeline for document uploads.
+- [ ] **Team Workspaces:** Shared chat sessions for organizations.
+
+**Contributing:**
+1. Fork the repo
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
 
 ## License
 
-ISC
+Distributed under the MIT License. See `LICENSE` for more information.
