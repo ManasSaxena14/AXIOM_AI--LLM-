@@ -16,17 +16,14 @@ app.use(helmet());
 
 const corsOptions = {
     origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
 
-        const allowedOrigin = process.env.CLIENT_URL; // e.g., https://your-app.vercel.app
+        const allowedOrigin = process.env.CLIENT_URL;
 
-        // Local development overrides
         if (process.env.NODE_ENV !== 'production') {
             return callback(null, true);
         }
 
-        // Check exact match or match with trailing slash differences
         if (allowedOrigin === origin ||
             allowedOrigin === origin + '/' ||
             allowedOrigin + '/' === origin) {
