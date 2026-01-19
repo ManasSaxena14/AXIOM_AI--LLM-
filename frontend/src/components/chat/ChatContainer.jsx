@@ -20,6 +20,67 @@ import {
     MessageSquare
 } from 'lucide-react';
 
+const MODES = [
+    { id: 'chat', label: 'Standard Chat', icon: MessageSquare, desc: 'Balanced for general tasks', tint: 'text-axiom-brand' },
+    { id: 'reasoning', label: 'Deep Thinking', icon: Brain, desc: 'Best for complex logic', tint: 'text-purple-400' },
+    { id: 'code', label: 'Code Mode', icon: Code, desc: 'Expert assistant for developers', tint: 'text-blue-400' },
+];
+
+const ModeSelector = ({ activeMode, setActiveMode, isModePopoverOpen, setIsModePopoverOpen, activeModeData }) => (
+    <div className="relative">
+        <button
+            type="button"
+            onClick={() => setIsModePopoverOpen(!isModePopoverOpen)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all ${isModePopoverOpen
+                ? 'bg-white/10 border-white/20 text-white shadow-lg'
+                : 'bg-white/5 border-white/5 text-axiom-text-tertiary hover:border-white/10 hover:text-white'
+                }`}
+        >
+            <activeModeData.icon size={14} className={activeModeData.tint} />
+            <span className="text-[11px] font-semibold tracking-tight">{activeModeData.label}</span>
+            <ChevronDown size={12} className={`transition-transform duration-200 ${isModePopoverOpen ? 'rotate-180' : ''}`} />
+        </button>
+
+        {isModePopoverOpen && (
+            <>
+                <div className="fixed inset-0 z-40" onClick={() => setIsModePopoverOpen(false)} />
+                <div className="absolute bottom-full left-0 mb-3 w-[260px] bg-axiom-surface border border-axiom-border rounded-2xl p-2 shadow-2xl z-50 animate-fade-in backdrop-blur-xl">
+                    <div className="text-[10px] font-bold text-axiom-text-tertiary uppercase tracking-widest px-3 py-2 mb-1">
+                        Select Thinking Mode
+                    </div>
+                    <div className="space-y-1">
+                        {MODES.map((m) => (
+                            <button
+                                key={m.id}
+                                type="button"
+                                onClick={() => {
+                                    setActiveMode(m.id);
+                                    setIsModePopoverOpen(false);
+                                }}
+                                className={`w-full flex items-center gap-3 p-2.5 rounded-xl transition-all ${activeMode === m.id
+                                    ? 'bg-white/5 border border-white/5 text-white'
+                                    : 'text-axiom-text-secondary hover:bg-white/5 hover:text-white border border-transparent'
+                                    }`}
+                            >
+                                <div className={`w-8 h-8 rounded-lg bg-black/40 flex items-center justify-center ${m.tint} border border-white/5`}>
+                                    <m.icon size={16} />
+                                </div>
+                                <div className="flex flex-col items-start pr-2">
+                                    <span className="text-[13px] font-bold">{m.label}</span>
+                                    <span className="text-[10px] text-axiom-text-tertiary leading-tight">{m.desc}</span>
+                                </div>
+                                {activeMode === m.id && (
+                                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-axiom-brand shadow-[0_0_8px_rgba(16,163,127,1)]" />
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </>
+        )}
+    </div>
+);
+
 const ChatContainer = () => {
     const { chatId } = useParams();
     const navigate = useNavigate();
@@ -42,12 +103,7 @@ const ChatContainer = () => {
 
 
     const currentChat = chats.find(c => c._id === chatId);
-    const modes = [
-        { id: 'chat', label: 'Standard Chat', icon: MessageSquare, desc: 'Balanced for general tasks', tint: 'text-axiom-brand' },
-        { id: 'reasoning', label: 'Deep Thinking', icon: Brain, desc: 'Best for complex logic', tint: 'text-purple-400' },
-        { id: 'code', label: 'Code Mode', icon: Code, desc: 'Expert assistant for developers', tint: 'text-blue-400' },
-    ];
-    const activeModeData = modes.find(m => m.id === activeMode) || modes[0];
+    const activeModeData = MODES.find(m => m.id === activeMode) || MODES[0];
 
 
     const scrollToBottom = (behavior = 'auto') => {
@@ -80,7 +136,7 @@ const ChatContainer = () => {
         };
         checkAutoSend();
         scrollToBottom('smooth');
-    }, [messages, isSending, chatId, isLoading, location.state, navigate, location.pathname, sendMessage]);
+    }, [messages, isSending, chatId, isLoading, location.state, navigate, location.pathname, sendMessage, activeMode]);
 
 
     const handleSend = async (e) => {
@@ -140,63 +196,6 @@ const ChatContainer = () => {
         showToast('Secure session link copied to clipboard.', 'success');
     };
 
-
-    const ModeSelector = () => (
-        <div className="relative">
-            <button
-                type="button"
-                onClick={() => setIsModePopoverOpen(!isModePopoverOpen)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all ${isModePopoverOpen
-                    ? 'bg-white/10 border-white/20 text-white shadow-lg'
-                    : 'bg-white/5 border-white/5 text-axiom-text-tertiary hover:border-white/10 hover:text-white'
-                    }`}
-            >
-                <activeModeData.icon size={14} className={activeModeData.tint} />
-                <span className="text-[11px] font-semibold tracking-tight">{activeModeData.label}</span>
-                <ChevronDown size={12} className={`transition-transform duration-200 ${isModePopoverOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            {isModePopoverOpen && (
-                <>
-                    <div className="fixed inset-0 z-40" onClick={() => setIsModePopoverOpen(false)} />
-                    <div className="absolute bottom-full left-0 mb-3 w-[260px] bg-axiom-surface border border-axiom-border rounded-2xl p-2 shadow-2xl z-50 animate-fade-in backdrop-blur-xl">
-                        <div className="text-[10px] font-bold text-axiom-text-tertiary uppercase tracking-widest px-3 py-2 mb-1">
-                            Select Thinking Mode
-                        </div>
-                        <div className="space-y-1">
-                            {modes.map((m) => (
-                                <button
-                                    key={m.id}
-                                    type="button"
-                                    onClick={() => {
-                                        setActiveMode(m.id);
-                                        setIsModePopoverOpen(false);
-                                    }}
-                                    className={`w-full flex items-center gap-3 p-2.5 rounded-xl transition-all ${activeMode === m.id
-                                        ? 'bg-white/5 border border-white/5 text-white'
-                                        : 'text-axiom-text-secondary hover:bg-white/5 hover:text-white border border-transparent'
-                                        }`}
-                                >
-                                    <div className={`w-8 h-8 rounded-lg bg-black/40 flex items-center justify-center ${m.tint} border border-white/5`}>
-                                        <m.icon size={16} />
-                                    </div>
-                                    <div className="flex flex-col items-start pr-2">
-                                        <span className="text-[13px] font-bold">{m.label}</span>
-                                        <span className="text-[10px] text-axiom-text-tertiary leading-tight">{m.desc}</span>
-                                    </div>
-                                    {activeMode === m.id && (
-                                        <div className="ml-auto w-1.5 h-1.5 rounded-full bg-axiom-brand shadow-[0_0_8px_rgba(16,163,127,1)]" />
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </>
-            )}
-        </div>
-    );
-
-
     if (!chatId) {
         return (
             <div className="flex-1 flex flex-col items-center justify-center p-6 bg-axiom-bg relative overflow-hidden">
@@ -218,7 +217,7 @@ const ChatContainer = () => {
 
                     {/* Mode Selection Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full animate-fade-in delay-100">
-                        {modes.map((m) => (
+                        {MODES.map((m) => (
                             <button
                                 key={m.id}
                                 type="button"
@@ -272,7 +271,13 @@ const ChatContainer = () => {
                                 rows={1}
                             />
                             <div className="flex items-center justify-between px-2 pt-2">
-                                <ModeSelector />
+                                <ModeSelector
+                                    activeMode={activeMode}
+                                    setActiveMode={setActiveMode}
+                                    isModePopoverOpen={isModePopoverOpen}
+                                    setIsModePopoverOpen={setIsModePopoverOpen}
+                                    activeModeData={activeModeData}
+                                />
                                 <button
                                     className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${input.trim() ? 'bg-white text-black' : 'bg-white/5 text-white/20 pointer-events-none'}`}
                                     type="submit"
@@ -467,7 +472,13 @@ const ChatContainer = () => {
                             rows={1}
                         />
                         <div className="flex items-center justify-between px-2 pt-2">
-                            <ModeSelector />
+                            <ModeSelector
+                                activeMode={activeMode}
+                                setActiveMode={setActiveMode}
+                                isModePopoverOpen={isModePopoverOpen}
+                                setIsModePopoverOpen={setIsModePopoverOpen}
+                                activeModeData={activeModeData}
+                            />
                             <button
                                 className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${input.trim() ? 'bg-white text-black' : 'bg-white/5 text-white/20 pointer-events-none'}`}
                                 type="submit"

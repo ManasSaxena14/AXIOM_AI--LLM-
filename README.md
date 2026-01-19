@@ -1,4 +1,4 @@
-<h1 align="center" style="font-weight: bold; font-size: 3em;">AXIOM AI</h1>
+<h1 align="center" style="font-weight: bold; font-size: 4em;">AXIOM AI</h1>
 
 <div align="center">
 

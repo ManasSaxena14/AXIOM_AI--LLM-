@@ -13,6 +13,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
+import AdminDashboard from './pages/AdminDashboard';
 
 
 const queryClient = new QueryClient({
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/chat" element={<ChatPage />} />
                 <Route path="/chat/:chatId" element={<ChatPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
               </Route>
 
               {/* Default Redirection */}

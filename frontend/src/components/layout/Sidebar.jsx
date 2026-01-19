@@ -15,7 +15,8 @@ import {
     Pin,
     Share,
     Check,
-    User
+    User,
+    Shield
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -112,6 +113,16 @@ const Sidebar = () => {
             </div>
 
             <div className="flex-1 overflow-y-auto px-3 py-2 space-y-0.5">
+                {user?.role === 'admin' && (
+                    <button
+                        onClick={() => navigate('/admin/dashboard')}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 mb-4 text-axiom-text-secondary hover:bg-white/5 hover:text-white rounded-axiom transition-all group"
+                    >
+                        <Shield size={16} className="text-axiom-brand group-hover:text-white transition-colors" />
+                        <span className="text-[13px] font-medium tracking-tight">Admin Dashboard</span>
+                    </button>
+                )}
+
                 <h3 className="text-[10px] font-bold text-axiom-text-tertiary uppercase tracking-widest px-3 mb-2 mt-4">
                     Recent History
                 </h3>

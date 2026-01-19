@@ -8,6 +8,7 @@ import errorHandler from './middleware/errorHandler.js';
 import healthRoutes from './routes/health.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import chatRoutes from './routes/chat.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use('/api/auth', authRoutes);
 
 
 app.use('/api/chats', chatRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use('*', (req, res) => {
     res.status(404).json({
