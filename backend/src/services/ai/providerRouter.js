@@ -21,9 +21,7 @@ export const getAiResponse = async (mode, userMessage) => {
         url = GROQ_URL;
         apiKey = process.env.GROQ_API_KEY;
         model = "llama-3.3-70b-versatile";
-        systemPrompt = mode === 'code'
-            ? "You are an expert software engineer. Provide clean, well-documented code."
-            : "You are a helpful, professional AI assistant.";
+        systemPrompt = "You are a helpful, professional AI assistant.";
     }
 
     try {

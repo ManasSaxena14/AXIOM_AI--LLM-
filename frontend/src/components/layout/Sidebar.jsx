@@ -21,21 +21,15 @@ import {
 
 const Sidebar = () => {
     const { chatId: activeChatId } = useParams();
-    const { chats, createChat, deleteChat, updateChat, isLoading } = useChats();
+    const { chats, deleteChat, updateChat, isLoading } = useChats();
     const { logout, user } = useAuth();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     const [menuOpenId, setMenuOpenId] = useState(null);
     const { showToast } = useToast();
 
-    const handleNewChat = async () => {
-        try {
-            const chat = await createChat({ title: 'New Chat', mode: 'chat' });
-            navigate(`/chat/${chat._id}`);
-            showToast('New secure session initialized.', 'success');
-        } catch (error) {
-            showToast('Failed to initialize session.', 'error');
-        }
+    const handleNewChat = () => {
+        navigate('/chat');
     };
 
     const handleDelete = async (e, id) => {
@@ -46,7 +40,7 @@ const Sidebar = () => {
             if (activeChatId === id) {
                 navigate('/chat');
             }
-        } catch (error) {
+        } catch {
             showToast('Purge operation failed.', 'error');
         }
     };
@@ -64,7 +58,7 @@ const Sidebar = () => {
             await updateChat({ chatId: chat._id, updates: { isPinned: !chat.isPinned } });
             showToast(chat.isPinned ? 'Session unpinned.' : 'Session pinned for quick access.', 'success');
             setMenuOpenId(null);
-        } catch (error) {
+        } catch {
             showToast('State update failed.', 'error');
         }
     };
@@ -81,7 +75,6 @@ const Sidebar = () => {
 
     return (
         <aside className="w-[280px] bg-axiom-surface border-r border-axiom-border flex flex-col h-full z-20">
-            {/* Branding Header */}
             <div className="p-5">
                 <div className="flex items-center gap-3 mb-6 group cursor-default">
                     <img src="/logo-symbol.png" alt="AxiomAI Symbol" className="h-8 w-auto mix-blend-screen" />

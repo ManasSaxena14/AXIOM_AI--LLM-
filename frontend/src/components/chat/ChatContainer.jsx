@@ -86,7 +86,7 @@ const ChatContainer = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { chats, createChat, updateChat, deleteChat } = useChats();
-    const { messages, sendMessage, clearMessages, isLoading, isSending, error } = useMessages(chatId);
+    const { messages, sendMessage, isLoading, isSending, error } = useMessages(chatId);
 
 
     const [input, setInput] = useState('');
@@ -129,8 +129,8 @@ const ChatContainer = () => {
                     if (result.assistantMessage) {
                         setStreamingMessageId(result.assistantMessage._id);
                     }
-                } catch (err) {
-                    console.error('Auto-send failed:', err);
+                } catch {
+                    console.error('Auto-send failed');
                 }
             }
         };
@@ -185,7 +185,7 @@ const ChatContainer = () => {
                 state: { initialMessage: input, initialMode: detectedMode }
             });
             setInput('');
-        } catch (err) {
+        } catch {
             showToast('Unable to initialize secure session.', 'error');
         }
     };

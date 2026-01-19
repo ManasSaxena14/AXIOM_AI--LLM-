@@ -32,6 +32,7 @@ const AdminDashboard = () => {
     const { showToast } = useToast();
     const [stats, setStats] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -40,10 +41,10 @@ const AdminDashboard = () => {
                 if (response.data.success) {
                     setStats(response.data.data);
                 }
-            } catch (error) {
-                console.error('Failed to fetch admin stats:', error);
+            } catch (err) {
+                console.error('Failed to fetch admin stats:', err);
+                setError(err.response?.data?.message || 'Failed to load dashboard metrics');
                 showToast('Failed to load dashboard metrics.', 'error');
-                // Optional: Redirect if unauthorized, though protected route should handle this
             } finally {
                 setIsLoading(false);
             }
@@ -64,9 +65,29 @@ const AdminDashboard = () => {
         );
     }
 
+    if (error) {
+        return (
+            <div className="min-h-screen bg-axiom-bg flex flex-col items-center justify-center p-6 text-center">
+                <div className="bg-red-500/10 p-4 rounded-full mb-4">
+                    <Shield size={48} className="text-red-500" />
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-2">Access Denied</h2>
+                <p className="text-axiom-text-tertiary mb-6 max-w-md">
+                    {error}. Please ensure you have the correct privileges or contact support.
+                </p>
+                <button
+                    onClick={() => navigate('/')}
+                    className="px-6 py-2.5 bg-axiom-surface border border-axiom-border hover:bg-white/5 rounded-xl transition-all font-medium text-white flex items-center gap-2"
+                >
+                    <ArrowLeft size={16} />
+                    Return to Home
+                </button>
+            </div>
+        );
+    }
+
     if (!stats) return null;
 
-    // Prepare chart data
     const pieData = stats.chats.byMode.map(item => ({
         name: item.name.charAt(0).toUpperCase() + item.name.slice(1) + ' Mode',
         value: item.value
@@ -74,11 +95,6 @@ const AdminDashboard = () => {
 
     const COLORS = ['#10a37f', '#a855f7', '#3b82f6', '#f59e0b'];
 
-    // Placeholder data for message activity if we don't have time-series data yet
-    // In a real scenario, backend would provide this. 
-    // For now, we'll visualize the distribution of user types or similar if available, 
-    // or just use the pie chart as the main "chart" requested.
-    // Let's create a simple bar chart comparing Total Users vs Total Chats vs Total Messages (log scale visually or just values)
     const barData = [
         { name: 'Users', value: stats.users.total },
         { name: 'Chats', value: stats.chats.total },
@@ -88,7 +104,6 @@ const AdminDashboard = () => {
     return (
         <div className="min-h-screen bg-axiom-bg text-white p-6 md:p-12">
             <div className="max-w-7xl mx-auto space-y-8">
-                {/* Header */}
                 <header className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <button
@@ -107,9 +122,7 @@ const AdminDashboard = () => {
                     </div>
                 </header>
 
-                {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Users Card */}
                     <div className="bg-axiom-surface border border-axiom-border rounded-2xl p-6 relative overflow-hidden group">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                             <Users size={64} />
@@ -118,7 +131,6 @@ const AdminDashboard = () => {
                         <p className="text-4xl font-black">{stats.users.total}</p>
                     </div>
 
-                    {/* Chats Card */}
                     <div className="bg-axiom-surface border border-axiom-border rounded-2xl p-6 relative overflow-hidden group">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                             <MessageSquare size={64} />
@@ -127,7 +139,6 @@ const AdminDashboard = () => {
                         <p className="text-4xl font-black">{stats.chats.total}</p>
                     </div>
 
-                    {/* Messages Card */}
                     <div className="bg-axiom-surface border border-axiom-border rounded-2xl p-6 relative overflow-hidden group">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                             <Activity size={64} />
@@ -137,15 +148,13 @@ const AdminDashboard = () => {
                     </div>
                 </div>
 
-                {/* Charts Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Chat Modes Distribution */}
-                    <div className="bg-axiom-surface border border-axiom-border rounded-3xl p-8">
+                    <div className="bg-axiom-surface border border-axiom-border rounded-3xl p-8 min-w-0">
                         <div className="flex items-center gap-3 mb-6">
                             <PieChart size={20} className="text-axiom-brand" />
                             <h2 className="text-xl font-bold">Session Mode Distribution</h2>
                         </div>
-                        <div className="h-[300px] w-full">
+                        <div className="h-[300px] w-full" style={{ minHeight: '300px' }}>
                             <ResponsiveContainer width="100%" height="100%">
                                 <RechartsPieChart>
                                     <Pie
@@ -153,7 +162,7 @@ const AdminDashboard = () => {
                                         cx="50%"
                                         cy="50%"
                                         innerRadius={60}
-                                        outerRadius={100}
+                                        outerRadius={80}
                                         fill="#8884d8"
                                         paddingAngle={5}
                                         dataKey="value"
@@ -166,19 +175,18 @@ const AdminDashboard = () => {
                                         contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px' }}
                                         itemStyle={{ color: '#fff' }}
                                     />
-                                    <Legend />
+                                    <Legend verticalAlign="bottom" height={36} />
                                 </RechartsPieChart>
                             </ResponsiveContainer>
                         </div>
                     </div>
 
-                    {/* System Volume Overview */}
-                    <div className="bg-axiom-surface border border-axiom-border rounded-3xl p-8">
+                    <div className="bg-axiom-surface border border-axiom-border rounded-3xl p-8 min-w-0">
                         <div className="flex items-center gap-3 mb-6">
                             <BarChart3 size={20} className="text-purple-400" />
                             <h2 className="text-xl font-bold">System Volume Overview</h2>
                         </div>
-                        <div className="h-[300px] w-full">
+                        <div className="h-[300px] w-full" style={{ minHeight: '300px' }}>
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={barData}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#333" />

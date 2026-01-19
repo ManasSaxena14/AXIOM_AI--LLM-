@@ -19,7 +19,7 @@ export const useChats = () => {
             const response = await apiClient.post('/chats', { title, mode });
             return response.data.data.chat;
         },
-        onSuccess: (newChat) => {
+        onSuccess: () => {
 
             queryClient.invalidateQueries({ queryKey: ['chats'] });
         },

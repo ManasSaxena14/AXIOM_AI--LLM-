@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import User from '../models/User.model.js';
 import ApiError from '../utils/ApiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
@@ -19,11 +20,19 @@ export const protect = asyncHandler(async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        req.user = {
-            id: decoded.id,
-            email: decoded.email,
-            role: decoded.role
-        };
+        const user = await User.findById(decoded.id);
+
+        if (!user || !user.isActive) {
+            res.cookie('token', 'none', {
+                expires: new Date(0),
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
+            });
+            throw new ApiError(401, 'User no longer exists or is inactive.');
+        }
+
+        req.user = user;
 
         next();
     } catch (error) {
