@@ -31,7 +31,10 @@ const sendTokenResponse = (user, statusCode, res, message) => {
         .json({
             success: true,
             message,
-            data: { user: userResponse }
+            data: {
+                user: userResponse,
+                token: token
+            }
         });
 };
 
@@ -151,7 +154,8 @@ export const getSession = asyncHandler(async (req, res) => {
                     name: user.name,
                     email: user.email,
                     role: user.role
-                }
+                },
+                token: token
             }
         });
     } catch (error) {

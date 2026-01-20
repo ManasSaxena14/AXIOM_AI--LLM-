@@ -10,9 +10,25 @@ const apiClient = axios.create({
     },
 });
 
+apiClient.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token && token !== 'none') {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
 
 apiClient.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        if (response.data?.data?.token) {
+            localStorage.setItem('token', response.data.data.token);
+        }
+        return response;
+    },
     (error) => {
 
         const isAuthCheck = error.config?.url?.includes('/auth/session');

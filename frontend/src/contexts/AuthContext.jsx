@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }) => {
             console.error('Logout error:', error);
         } finally {
             setUser(null);
+            localStorage.removeItem('token');
             window.location.href = '/login';
         }
     };
