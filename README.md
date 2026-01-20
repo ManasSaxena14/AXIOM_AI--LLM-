@@ -6,6 +6,8 @@
 
 **Axiom AI** is a secure, production-hardened AI workspace that unifies ultra-fast inference (Groq) and deep reasoning capabilities (Cerebras) into a single, premium interface.
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Axiom%20AI-00bcd4?style=for-the-badge&logo=vercel)](https://axiomai-two.vercel.app/)
+
 </div>
 
 ---
@@ -19,27 +21,6 @@ Axiom AI provides a unified "Glassmorphic" neural interface that:
 - Router automatically delegates tasks to the optimal engine (**Groq** for speed, **Cerebras** for reasoning).
 - Enforces strict JWT-based session security with HTTP-only cookies.
 - Delivers a premium, zero-latency user experience with optimistic UI updates.
-
----
-
-## Architecture
-
-```mermaid
-graph TD
-    User[Clients] -->|HTTPS/WSS| CDN[Load Balancer]
-    CDN -->|Static Assets| Frontend[React + Vite Frontend]
-    CDN -->|API Requests| Backend[Node.js + Express API]
-    
-    subgraph "Axiom Core"
-        Backend -->|Auth| AuthMiddleware[JWT Security Layer]
-        Backend -->|State| DB[(MongoDB Atlas)]
-        
-        subgraph "Neural Router"
-            Backend -->|Standard/Code| EngineA[Groq LPU (Llama 3)]
-            Backend -->|Deep Thinking| EngineB[Cerebras Wafer (Llama 3.1)]
-        end
-    end
-```
 
 ---
 
@@ -177,7 +158,3 @@ We welcome contributions to the Axiom Core.
 5. Open a Pull Request
 
 ---
-
-## License
-
-Distributed under the MIT License. See `LICENSE` for more information.
