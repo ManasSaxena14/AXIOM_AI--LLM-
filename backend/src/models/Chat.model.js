@@ -18,6 +18,10 @@ const chatSchema = new mongoose.Schema(
             type: String,
             enum: ['groq', 'cerebras', 'chat', 'code', 'reasoning'],
             default: 'chat'
+        },
+        isPinned: {
+            type: Boolean,
+            default: false
         }
     },
     {

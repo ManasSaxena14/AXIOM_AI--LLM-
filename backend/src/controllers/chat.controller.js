@@ -22,7 +22,7 @@ export const createChat = asyncHandler(async (req, res) => {
 });
 
 export const getChats = asyncHandler(async (req, res) => {
-    const chats = await Chat.find({ userId: req.user.id }).sort({ createdAt: -1 });
+    const chats = await Chat.find({ userId: req.user.id }).sort({ isPinned: -1, createdAt: -1 });
 
     res.status(200).json({
         success: true,
@@ -79,6 +79,10 @@ export const deleteChat = asyncHandler(async (req, res) => {
 
     if (!chat) {
         throw new ApiError(404, 'Chat not found');
+    }
+
+    if (chat.isPinned) {
+        throw new ApiError(400, 'Pinned sessions cannot be purged. Unpin this session first.');
     }
 
     await Chat.findByIdAndDelete(req.params.id);

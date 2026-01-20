@@ -34,6 +34,13 @@ const Sidebar = () => {
 
     const handleDelete = async (e, id) => {
         e.stopPropagation();
+
+        const chatToDelete = chats.find(c => c._id === id);
+        if (chatToDelete?.isPinned) {
+            showToast('Pinned sessions are protected. Unpin to purge.', 'warning');
+            return;
+        }
+
         try {
             await deleteChat(id);
             showToast('Session purged from Axiom network.', 'info');
