@@ -26,7 +26,8 @@ const corsOptions = {
 
         if (allowedOrigin === origin ||
             allowedOrigin === origin + '/' ||
-            allowedOrigin + '/' === origin) {
+            allowedOrigin + '/' === origin ||
+            allowedOrigin.replace(/\/$/, '') === origin.replace(/\/$/, '')) {
             callback(null, true);
         } else {
             console.log(`[CORS BLOCKED] Request from origin: '${origin}' does not match allowed: '${allowedOrigin}'`);

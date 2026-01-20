@@ -15,7 +15,7 @@ const sendTokenResponse = (user, statusCode, res, message) => {
         expires: new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000),
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     };
 
     const userResponse = {
@@ -87,7 +87,7 @@ export const logout = asyncHandler(async (req, res) => {
         expires: new Date(0),
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     });
 
     res.status(200).json({
@@ -104,7 +104,7 @@ export const getMe = asyncHandler(async (req, res) => {
             expires: new Date(0),
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
         });
         throw new ApiError(404, 'User not found');
     }

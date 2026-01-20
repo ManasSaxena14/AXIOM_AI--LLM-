@@ -27,7 +27,7 @@ export const protect = asyncHandler(async (req, res, next) => {
                 expires: new Date(0),
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
             });
             throw new ApiError(401, 'User no longer exists or is inactive.');
         }
@@ -40,7 +40,7 @@ export const protect = asyncHandler(async (req, res, next) => {
             expires: new Date(0),
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
         });
         throw new ApiError(401, 'Invalid or expired token. Please login again.');
     }
